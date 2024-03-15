@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>infobox show[one/Multiple]</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="style.css">
+<script src="./js/APIkey.js"></script>
+</head>
+
+<body>
+
+
+<!-- MAP[START] -->
+<div id="myMap" style='position:relative;width: 70%;height:500px;'></div>
+<!-- MAP[END] -->
+
+<!-- Right side textarea for displaying infobox contents -->
+<div id="infoBoxContainer">
+
+    <div class="infobox infobox1">
+        <h1>①ミネアポリス・セントポール国際空港</h1>
+        <textarea class="memo-input" placeholder=""></textarea>
+        <button class="memo-save-btn" onclick="saveMemo('memo1')">保存</button>
+    </div>
+
+    <div class="infobox infobox2">
+        <h1>②モール・オブ・アメリカ </h1>
+        <textarea class="memo-input" placeholder=""></textarea>
+        <button class="memo-save-btn" onclick="saveMemo('memo2')">保存</button>        
+    </div>
+    <div class="infobox infobox3">
+        <h1>③MASON & JAXONの家</h1>
+        <textarea class="memo-input" placeholder=""></textarea>
+        <button class="memo-save-btn" onclick="saveMemo('memo3')">保存</button>   
+    </div>
+    <div class="infobox infobox4">
+        <h1>④SCSU</h1>
+        <textarea class="memo-input" placeholder=""></textarea>
+        <button class="memo-save-btn" onclick="saveMemo('memo4')">保存</button>   
+    </div>
+    
+    <div class="infobox infobox5">
+        <h1>⑤Albertville Premium outlet</h1>
+        <textarea class="memo-input" placeholder=""></textarea>
+        <button class="memo-save-btn" onclick="saveMemo('memo5')">保存</button>   
+    </div>
+    </div>
+
+</div>
+
+
+<script src='https://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=APIKEY' async defer></script>
+<script src="../js/BmapQuery.js"></script>
+
+<script>
+   
+    //init
+    function GetMap() {
+        //------------------------------------------------------------------------
+        //1. Instance
+        //------------------------------------------------------------------------
+        const map = new Bmap("#myMap");
+        //------------------------------------------------------------------------
+        //2. Display Map
+        //------------------------------------------------------------------------
+        map.startMap(45.24723178592547, -93.66919756931279, "load", 9);
+
+        //----------------------------------------------------
+        //3. Infobox
+        //   options = new Array();
+        //   options[index] = { lat, lon, width, height, title, pinColor, description, show };
+        //----------------------------------------------------
+        const options = [];
+        options[0]={
+            "lat":44.88624814550893,
+            "lon":-93.21271387994727,
+            "title":"①ミネアポリス・セントポール国際空港",
+            "pinColor":"#ff0000",
+            "pinText":"A",
+            "height":300,
+            "width":320,
+            "description": '<img src="../img/MSP.jpg" width="300"></div><>羽田空港からの直行便<br>行き：約12時間 帰り：約13時間 <a href="https://www.mspairport.com/">＜HP＞</a>',
+            "show":false
+        };
+        
+        options[1]={
+            "lat":44.855306224576644,
+            "lon":-93.24212896931279,
+            "title":"②モール・オブ・アメリカ",
+            "pinColor":"#ff0000",
+            "height":300,
+            "width":320,
+            "description": '<img src="../img/MOA.jpg" width="300", height="150"><br>北米で一番大きいショッピングモール<br>スポンジボブの遊園地あるよ <a href="https://mallofamerica.com/">＜HP＞</a>',
+            "show":false
+        };
+        options[2]={
+            "lat":45.24750371582989,
+            "lon":-93.66924048465638,
+            "title":"⑤Albertville Premium outlet",
+            "pinColor":"#ff0000",
+            "height":300,
+            "width":320,
+            "description": 'プレミアムアウトレット <a href="https://www.premiumoutlets.com/outlet/albertville">＜HP＞</a><br><img src="../img/APO.jpg" width="300", height="150">',
+            "show":false
+        };
+
+        
+        options[3]={
+            "lat":45.545918792435636,
+            "lon":-94.1806277419775,
+            "title":"③MASON & JAXSON の家",
+            "pinColor":"#ff0000",
+            "height":300,
+            "width":320,
+            "description": 'Mason & Jaxonの家<br><img src="../img/limpert.jpg" width="300", height="150">',
+            "show":false
+        };
+
+        options[4]={
+            "lat":45.54943541916469,
+            "lon":-94.15170836137442,
+            "title":"④セントクラウド大学",
+            "pinColor":"#ff0000",
+            "height":300,
+            "width":320,
+            "description": 'ママが行ってた大学 <a href="https://www.stcloudstate.edu/">＜HP＞</a><br><img src="../img/scsu.jpg" width="300", height="150">',
+            "show":false
+        };
+
+
+        //B.Get geocode of click location
+    map.onGeocode("click", function(data){
+        console.log(data);                   //Get Geocode ObjectData
+        const lat = data.location.latitude;  //Get latitude
+        const lon = data.location.longitude; //Get longitude
+        map.changeMap(lat, lon, "load", 9);
+    });
+       
+        //----------------------------------------------------
+        //4. Switch infoboxs
+        //   infoboxLayers(options, true); //true=one, false=Multiple
+        //----------------------------------------------------
+        map.infoboxLayers(options,true);
+
+        // ローカルストレージからメモを読み込む
+        loadMemo('memo1');
+        loadMemo('memo2');
+        loadMemo('memo3');
+        loadMemo('memo4');
+        loadMemo('memo5');
+    }
+
+    // メモを保存する
+    function saveMemo(key) {
+        const memoInput = document.querySelector('.infobox1 .memo-input');
+        localStorage.setItem(key, memoInput.value);
+    }
+
+    function saveMemo(key) {
+        const memoInput = document.querySelector('.infobox2 .memo-input');
+        localStorage.setItem(key, memoInput.value);
+    }
+
+    function saveMemo(key) {
+        const memoInput = document.querySelector('.infobox3 .memo-input');
+        localStorage.setItem(key, memoInput.value);
+    }
+
+    function saveMemo(key) {
+        const memoInput = document.querySelector('.infobox4 .memo-input');
+        localStorage.setItem(key, memoInput.value);
+    }
+
+    function saveMemo(key) {
+        const memoInput = document.querySelector('.infobox5 .memo-input');
+        localStorage.setItem(key, memoInput.value);
+    }
+
+    // ローカルストレージからメモを読み込む
+    function loadMemo(key) {
+        const memoInput = document.querySelector('.infobox1 .memo-input');
+        const memo = localStorage.getItem(key);
+        if (memo) {
+            memoInput.value = memo;
+        }
+    }
+
+    function loadMemo(key) {
+        const memoInput = document.querySelector('.infobox2 .memo-input');
+        const memo = localStorage.getItem(key);
+        if (memo) {
+            memoInput.value = memo;
+        }
+    }
+
+    function loadMemo(key) {
+        const memoInput = document.querySelector('.infobox3 .memo-input');
+        const memo = localStorage.getItem(key);
+        if (memo) {
+            memoInput.value = memo;
+        }
+    }
+
+    function loadMemo(key) {
+        const memoInput = document.querySelector('.infobox4 .memo-input');
+        const memo = localStorage.getItem(key);
+        if (memo) {
+            memoInput.value = memo;
+        }
+    }
+
+    function loadMemo(key) {
+        const memoInput = document.querySelector('.infobox5 .memo-input');
+        const memo = localStorage.getItem(key);
+        if (memo) {
+            memoInput.value = memo;
+        }
+    }
+
+    
+
+</script>
+</body>
+</html>
